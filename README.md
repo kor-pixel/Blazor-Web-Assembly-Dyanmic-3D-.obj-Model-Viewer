@@ -1,6 +1,8 @@
 # Blazor Web Assembly Dynamic 3D .obj Model Viewer
 This is a Blazor WebAssembly app which uses Javascript interoperability to allow a user to upload and view a 3D model in their browser. It could also potentially be ported to alternative Blazor platform integrations and serve as an example of a platform agnostic desktop application. 
 
+This is not a more performant 3d object viewer in webassembly, the javascript interoperability layer introduces considerable overhead. This is a proof of concept of a dynamically uploaded 3D file viewer  using C# functions for later implementation in apps with a focus more suited for webassembly.
+
 ![Example Image](docs/image.png)
 
 ## Developer Guide
