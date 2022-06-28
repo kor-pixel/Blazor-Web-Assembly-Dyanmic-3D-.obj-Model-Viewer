@@ -1,0 +1,73 @@
+@page "/"
+@inject IJSRuntime JSRuntime
+@using System.IO
+
+
+
+
+<PageTitle>Index</PageTitle>
+
+<h1>Blazor 3D Object Viewer</h1>
+
+
+<p>This is a simple 3d object viewer made using c# with a javascript interop layer compiled to webassembly using Blazor WASM</p>
+<p>upload a .obj file below</p>
+
+
+<InputFile OnChange="@SingleUpload" />
+
+<button class="btn btn-primary" @onclick="clear_view">Clear .obj</button>
+<br>
+
+
+<br>
+<canvas id="@canvasId"></canvas>
+<p role="status">Tested Amount: @Number_of_Objects_tested</p>
+
+
+<style>
+h1 {
+        color: grey;
+        font-style: italic;
+    }
+canvas { 
+	width: 50%; 
+	height: 50%; 
+	display: block; 
+}
+
+</style>
+
+
+@code {
+	const string canvasId = "canvas-id"; 
+	private string? objurl;
+
+	private int Number_of_Objects_tested = 0;
+	
+	private async Task SingleUpload(InputFileChangeEventArgs e)
+   {
+	   
+		using var stream = e.File.OpenReadStream();
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+		//convert it to base64 and produce a url from it
+		// url makes it compatible with the loaderfor three.js (OBJLoader2.js)
+        objurl = "data:" + e.File.ContentType + ";base64," + Convert.ToBase64String(ms.ToArray());
+
+	   	object[] args = { canvasId };
+	   	await JSRuntime.InvokeVoidAsync("threeExample", args, objurl); 
+
+		Number_of_Objects_tested ++;
+
+   }
+	private async Task clear_view(){
+		objurl = " ";
+		object[] args = { canvasId };
+	   	await JSRuntime.InvokeVoidAsync("threeExample", args, objurl); 
+	}
+
+
+
+
+}
